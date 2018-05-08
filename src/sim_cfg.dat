@@ -1,0 +1,15 @@
+#=============================
+# Dados para simulação
+# TrafficJam
+# Programado por João Fellipe Uller
+# Arquivo: sim_cfg.dat
+#
+# PARAMETROS
+# 1 - Tempo de simulação (segundos)
+# 2 - Tempo para troca de semaforo (segundos)
+#=============================
+7200
+20
+# Implementação de tempos configuraveis para cada direção
+# EM BREVE
+#================FIM
