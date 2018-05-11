@@ -6,6 +6,8 @@
 #include "array_list.hpp"
 #include "road.hpp"
 
+using structures::Road;
+
 namespace structures {
 
 // Implementa um semaforo
@@ -25,18 +27,19 @@ class Semaphore {
      // Fecha o semaforo
      void close();
 
+     // Retorna a pista que esta com semaforo aberto no momento
+     Road* open();
+
      // Abre a proxima pista
-     void open();
+     void open_next();
 
  private:
 	 ArrayList<Road *> efferent_{4};  // Lista das pistas de saida
 	 ArrayList<Road *> afferent_{4};  // Lista das pistas de entrada
 	 int probs_[4];  // Probabilidade de tomar cada pista eferente
 
-     Road *next_;  // VER -> Proxima pista a abrir
-     Road *open_;  // VER -> Se for CircList usar head no lugar
-
-     // Ver atributo para o tempo que cada pista fica aberta
+     int actual_;
+     Road *open_;
 
 };
 
@@ -71,11 +74,16 @@ int structures::Semaphore::roadProb(std::size_t index) {
 }
 
 void structures::Semaphore::close() {
-    // VER
+    open_ = nullptr;
 }
 
-void structures::Semaphore::open() {
-    // VER
+Road* structures::Semaphore::open() {
+    return open_;
+}
+
+void structures::Semaphore::open_next() {
+    actual_ = ++actual_ % 4;
+    open_ = afferent_[actual_];
 }
 
 #endif

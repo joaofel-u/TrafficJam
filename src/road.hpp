@@ -67,7 +67,7 @@ structures::Road::Road(unsigned int velocity, std::size_t max_size, char type) {
 }
 
 structures::Road::~Road() {
-    LinkedQueue<Vehicle*>::clear();
+    clear();
 }
 
 void structures::Road::clear() {
@@ -94,7 +94,7 @@ bool structures::Road::blocked() const {
 }
 
 bool structures::Road::full() const {
-    return LinkedQueue<Vehicle*>::size() == max_size_;
+    return size_ == max_size_;
 }
 
 unsigned int structures::Road::velocity() {

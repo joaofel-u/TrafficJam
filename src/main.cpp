@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "system.hpp"
+#include <string.h>
 
 #define DEFAULT_SIM_TIME 14400  // 4 horas
 #define DEFAULT_SEMAPHORE_TIME 25
@@ -13,16 +14,14 @@ int main(int argc, char const *argv[]) {
 	bool comentarios = true;
 	std::size_t tempo_semaforo = DEFAULT_SEMAPHORE_TIME;
 	std::size_t tempo_simulacao = DEFAULT_SIM_TIME;
-	std::ifstream arquivo;
 
-	arquivo.open("sim_cfg.dat");
+	std::ifstream arquivo("sim_cfg.dat");
 	if (arquivo.is_open()) {
-		char line[200];
+		char line[100];
 		while (comentarios){
-			arquivo.getline(line,200);
-			if (line[0] != '#') {
+			arquivo.getline(line,100);
+			if (line[0]!='#')
 				comentarios = false;
-			}
 		}
 
 		arquivo >> tempo_simulacao;

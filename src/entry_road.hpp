@@ -81,7 +81,17 @@ unsigned int structures::EntryRoad::time_next_vehicle() {
 
 int structures::EntryRoad::next_direction() {
     srand(time(NULL));
-    return 0;  // COMPLETAR
+    int prob = rand() % 100;
+    int prob_acumulada = 0;
+
+    for (int i = 0; i < 3; i++) {
+        if (prob < (probs_[i] + prob_acumulada))
+            return i;
+        else
+            prob_acumulada += prob;
+    }
+
+    return 0;  // Inalcancavel
 }
 
 #endif
