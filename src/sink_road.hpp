@@ -9,7 +9,7 @@ namespace structures {
 class SinkRoad : public Road {
  public:
      // Construtor
-     SinkRoad(unsigned int velocity, std::size_t max_size);
+     SinkRoad(unsigned int velocity, std::size_t max_size, char* name);
 
      // Destrutor
      ~SinkRoad();
@@ -21,8 +21,8 @@ class SinkRoad : public Road {
 }
 
 // IMPLEMENTACAO
-structures::SinkRoad::SinkRoad(unsigned int velocity, std::size_t max_size) :
-    Road::Road(velocity, max_size, 'e')
+structures::SinkRoad::SinkRoad(unsigned int velocity, std::size_t max_size, char* name) :
+    Road::Road(velocity, max_size, 'e', name)
     {
 }
 

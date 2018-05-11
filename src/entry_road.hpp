@@ -12,20 +12,21 @@ class EntryRoad : public Road {
      // Construtor
      EntryRoad(unsigned int velocity,
             std::size_t max_size,
-            Road& rl,
             int prob_rl,
-            Road& rf,
             int prob_rf,
-     		Road& rr,
             int prob_rr,
             int avg_new_time,
-            int variation);
+            int variation,
+            char* name);
 
      // Destrutor
      ~EntryRoad();
 
      // Insere veiculo no final da fila
      void enqueue(Vehicle* vehicle);
+
+     // Define as ruas adjacentes no cruzamento
+     void out_roads(Road* rl, Road* rf, Road* rr);
 
      // Gera um tempo aleato'rio para entrada de um novo veiculo
      unsigned int time_next_vehicle();
@@ -45,21 +46,16 @@ class EntryRoad : public Road {
 // IMPLEMENTACAO
 structures::EntryRoad::EntryRoad(unsigned int velocity,
                                 std::size_t max_size,
-                                Road& rl,
                                 int prob_rl,
-                                Road& rf,
                                 int prob_rf,
-                                Road& rr,
                                 int prob_rr,
                                 int avg_new_time,
-                                int variation) :
-    Road::Road(velocity, max_size, 'a'),
+                                int variation,
+                                char* name) :
+    Road::Road(velocity, max_size, 'a', name),
     average_new_time_{avg_new_time},
     variation_{variation}
     {
-	   out_roads_.push_back(&rl);  // Road_left
-	   out_roads_.push_back(&rf);  // Road_front
-	   out_roads_.push_back(&rr);  // Road_right
 	   probs_[0] = prob_rl;
 	   probs_[1] = prob_rf;
 	   probs_[2] = prob_rr;
@@ -72,6 +68,12 @@ structures::EntryRoad::~EntryRoad() {
 void structures::EntryRoad::enqueue(Vehicle* vehicle) {
 	vehicle->direction(next_direction());
     Road::enqueue(vehicle);
+}
+
+void structures::EntryRoad::out_roads(Road* rl, Road* rf, Road* rr) {
+    out_roads_.push_back(rl);  // Road_left
+    out_roads_.push_back(rf);  // Road_front
+    out_roads_.push_back(rr);  // Road_right
 }
 
 unsigned int structures::EntryRoad::time_next_vehicle() {

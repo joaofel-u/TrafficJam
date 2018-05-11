@@ -30,7 +30,7 @@ class Event {
 	  bool operator>(const Event& other) const;
 
   private:
-	  char type_;  // i = in, o = out, c = semaphore_change, a = semaphore_arrive
+	  char type_;  // i = in, o = out, s = semaphore_change, a = semaphore_arrive
 	  std::size_t event_time_;
 	  void* src_;
 };

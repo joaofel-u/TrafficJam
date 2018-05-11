@@ -14,9 +14,9 @@ namespace structures {
 class Semaphore {
  public:
      // Construtor
-	 Semaphore(Road& a1, Road& a2, Road& a3, Road& a4,
-               Road& e1, int prob_e1, Road& e2, int prob_e2,
-               Road& e3, int prob_e3, Road& e4, int prob_e4);
+	 Semaphore(Road* a1, Road* a2, Road* a3, Road* a4,
+               Road* e1, int prob_e1, Road* e2, int prob_e2,
+               Road* e3, int prob_e3, Road* e4, int prob_e4);
 
      // Destrutor
      ~Semaphore();
@@ -47,20 +47,20 @@ class Semaphore {
 
 /// IMPLEMENTACAO
 
-structures::Semaphore::Semaphore(Road& a1, Road& a2, Road& a3, Road& a4, Road& e1, int prob_e1,
-                                 Road& e2, int prob_e2, Road& e3, int prob_e3, Road& e4, int prob_e4) {
-              afferent_.push_back(&a1);
-              afferent_.push_back(&a2);
-              afferent_.push_back(&a3);
-              afferent_.push_back(&a4);
+structures::Semaphore::Semaphore(Road* a1, Road* a2, Road* a3, Road* a4, Road* e1, int prob_e1,
+                                 Road* e2, int prob_e2, Road* e3, int prob_e3, Road* e4, int prob_e4) {
+              afferent_.push_back(a1);
+              afferent_.push_back(a2);
+              afferent_.push_back(a3);
+              afferent_.push_back(a4);
 
-              efferent_.push_back(&e1);
+              efferent_.push_back(e1);
               probs_[0] = prob_e1;
-              efferent_.push_back(&e2);
+              efferent_.push_back(e2);
               probs_[1] = prob_e2;
-              efferent_.push_back(&e3);
+              efferent_.push_back(e3);
               probs_[2] = prob_e3;
-              efferent_.push_back(&e4);
+              efferent_.push_back(e4);
               probs_[3] = prob_e4;
 }
 

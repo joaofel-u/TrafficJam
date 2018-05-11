@@ -5,13 +5,14 @@
 #include <cstdio>
 #include "linked_queue.hpp"
 #include "vehicle.hpp"
+#include "string.h"
 
 namespace structures {
 // Implementa uma pista
 class Road : private LinkedQueue<Vehicle *> {
  public:
      // Construtor
-     Road(unsigned int velocity, std::size_t max_size, char type);
+     Road(unsigned int velocity, std::size_t max_size, char type, char* name);
 
      // Destrutor
      ~Road();
@@ -46,24 +47,29 @@ class Road : private LinkedQueue<Vehicle *> {
      // Retorna a velocidade ma'xima da pista
      unsigned int velocity();
 
+     // Retorna o tipo de pista ('e' = eferente, 'a' = aferente)
+     char type();
+
  private:
 	 unsigned int velocity_;  // Velocidade da via
 	 std::size_t max_size_;  // Tamanho em metros (VER)
      std::size_t size_{0u};
 	 bool blocked_;  // Sinaliza se a pista esta bloqueada
      char type_;  // e = eferente (sink), a = aferente (alimenta um semaforo)
+     char* name_;  // Nome simbo´lico da pista dentro do sistema
 };
 
 }
 
 // IMPLEMENTACAO
 
-structures::Road::Road(unsigned int velocity, std::size_t max_size, char type) {
+structures::Road::Road(unsigned int velocity, std::size_t max_size, char type, char* name) {
     LinkedQueue<Vehicle*>();
     velocity_ = velocity;
     max_size_ = max_size;
     type_ = type;
     blocked_ = false;
+    name_ = name;
 }
 
 structures::Road::~Road() {
@@ -99,6 +105,10 @@ bool structures::Road::full() const {
 
 unsigned int structures::Road::velocity() {
     return velocity_;
+}
+
+char structures::Road::type() {
+    return type_;
 }
 
 #endif
