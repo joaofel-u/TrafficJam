@@ -6,6 +6,7 @@
 #include "road.hpp"
 
 using structures::Road;
+using structures::Vehicle;
 
 namespace structures {
 // Implementa uma pista de entrada (fonte ou central)

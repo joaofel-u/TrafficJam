@@ -59,6 +59,9 @@ structures::Semaphore::Semaphore(Road* a1, Road* a2, Road* a3, Road* a4, Road* e
               probs_[2] = prob_e3;
               efferent_.push_back(e4);
               probs_[3] = prob_e4;
+
+              open_ = afferent_[0];
+              open_->open(true);
 }
 
 structures::Semaphore::~Semaphore() {
@@ -75,9 +78,10 @@ Road* structures::Semaphore::open() {
 }
 
 void structures::Semaphore::change() {
-    open_ = nullptr;
+    open_->open(false);
     actual_ = ++actual_ % 4;
     open_ = afferent_[actual_];
+    open_->open(true);
 }
 
 #endif

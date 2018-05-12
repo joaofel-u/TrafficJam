@@ -8,7 +8,7 @@
 # 1 - Tempo de simulação (segundos)
 # 2 - Tempo para troca de semaforo (segundos)
 #=============================
-MERDA!!!!
+PARAMETROS
 7200
 20
 # Implementação de tempos configuraveis para cada direção

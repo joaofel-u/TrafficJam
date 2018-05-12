@@ -37,6 +37,9 @@ class System {
 	std::size_t execution_time_;  // Tempo de simulacao
 	std::size_t semaphore_time_;  // Tempo entre trocas no semaforo
 
+    int input_counter_ = 0;
+    int output_counter_ = 0;
+
 	ArrayList<Road*> roads_{14u};  // Lista das pistas do sistema
 	ArrayList<Semaphore*> semaphores_{2u};  // Lista dos semaforos
 	LinkedList<Event>* events_;  // Lista de eventos
@@ -141,6 +144,7 @@ void structures::System::run() {
                     events_made++;
                     Vehicle* new_vehicle = new Vehicle();
                     EntryRoad* road = (EntryRoad*) current_event.src();
+                    new_vehicle->direction(road->next_direction());
 
                     try {
                         // Adiciona o carro a pista (se possivel)
@@ -158,11 +162,12 @@ void structures::System::run() {
                         event_time = global_time_ + road->time_of_route();
                         Event* semaphore_arrival = new Event('a', event_time, road);
                         events_->insert_sorted(*semaphore_arrival);
+                        input_counter_++;
 
                     } catch(std::out_of_range error) { // Pista cheia
                         i++;
                         delete new_vehicle;
-                        std::cout << "Pista engarrafada: " << road->name();
+                        std::cout << "Pista engarrafada: " << road->name() << std::endl;
                     }
 
                     break;
@@ -178,6 +183,7 @@ void structures::System::run() {
 
                     // Exclui o carro do sistema
                     delete road->dequeue();
+                    output_counter_++;
 
                     break;
                 }
@@ -204,7 +210,42 @@ void structures::System::run() {
                 // Evento de chegada num semaforo
                 case 'a': {
                     events_made++;
-                    // calcular direcao do veiculo
+                    EntryRoad* road = (EntryRoad*) current_event.src();
+                    if (!road->open()) {
+                        i++;
+                        break;
+                    }
+
+                    Vehicle* vehicle = road->front();
+                    Road* temp = road->out_road(vehicle->direction());
+
+                    try {
+                        temp->enqueue(vehicle);
+                        road->dequeue();
+
+                        // Remove o evento completado
+                        events_->pop(i);
+
+                        if (temp->type() == 'a') {
+                            EntryRoad* r = (EntryRoad*) temp;
+
+                            std::size_t event_time = global_time_ + r->time_of_route();
+                            Event* e = new Event('a', event_time, r);
+                            events_->insert_sorted(*e);
+                        } else {
+                            SinkRoad* r = (SinkRoad*) temp;
+
+                            std::size_t event_time = global_time_ + r->time_of_route();
+                            Event* e = new Event('o', event_time, r);
+                            events_->insert_sorted(*e);
+                        }
+
+                        global_time_++;  // Soma o tempo de saida do carro
+                    } catch(std::out_of_range error) {
+                        i++;
+                        std::cout << "Troca de pistas falhou: " << road->name() << " para " << temp->name() << std::endl;
+                    }
+
 
                     break;
                 }
@@ -224,7 +265,10 @@ void structures::System::run() {
 }
 
 void structures::System::result() {
-
+    std::cout << "------------RESULTADOS-------------------" << std::endl;
+    std::cout << "Entrada de veículos  | " << input_counter_ << std::endl;
+    //std::cout << "Veículos nas ruas    |  " << inside_roads_ << std::endl;
+    std::cout << "Saída de  veíulos    |  " << output_counter_ << std::endl;
 }
 
 #endif

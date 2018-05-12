@@ -7,6 +7,8 @@
 #include "vehicle.hpp"
 #include "string.h"
 
+using structures::Vehicle;
+
 namespace structures {
 // Implementa uma pista
 class Road : private LinkedQueue<Vehicle *> {
@@ -38,9 +40,6 @@ class Road : private LinkedQueue<Vehicle *> {
      // Retorna o tamanho atual da fila de carros
      std::size_t size() const;
 
-     // Retorna se a pista esta bloqueada
-     bool blocked() const;
-
      // Retorna se a pista esta cheia
      bool full() const;
 
@@ -53,13 +52,19 @@ class Road : private LinkedQueue<Vehicle *> {
      // Retorna o nome da pista
      char* name();
 
+     // Retorna se a pista esta com o semaforo aberto para sua direcao
+     bool open();
+
+     // Altera o valor da variavel open_
+     void open(bool open);
+
  private:
 	 unsigned int velocity_;  // Velocidade da via
 	 std::size_t max_size_;  // Tamanho em metros da pista
      std::size_t size_{0u};  // Tamanho em metros da fila de carros
-	 bool blocked_;  // Sinaliza se a pista esta bloqueada
      char* name_;  // Nome simbo´lico da pista dentro do sistema
      char type_;
+     bool open_{false};  // Sinaliza se a pista esta com o semaforo aberto para sua direcao
 };
 
 }
@@ -70,7 +75,6 @@ structures::Road::Road(unsigned int velocity, std::size_t max_size, char* name, 
     LinkedQueue<Vehicle*>();
     velocity_ = velocity;
     max_size_ = max_size;
-    blocked_ = false;
     name_ = name;
     type_ = type;
 }
@@ -98,8 +102,8 @@ std::size_t structures::Road::max_size() const {
     return max_size_;
 }
 
-bool structures::Road::blocked() const {
-    return blocked_;
+Vehicle* structures::Road::front() const {
+    return LinkedQueue<Vehicle*>::front();
 }
 
 bool structures::Road::full() const {
@@ -116,6 +120,15 @@ char structures::Road::type() {
 
 char* structures::Road::name() {
     return name_;
+}
+
+
+bool structures::Road::open() {
+    return open_;
+}
+
+void structures::Road::open(bool open) {
+    open_ = open;
 }
 
 #endif
