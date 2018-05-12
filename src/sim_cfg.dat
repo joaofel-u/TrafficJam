@@ -9,7 +9,7 @@
 # 2 - Tempo para troca de semaforo (segundos)
 #=============================
 PARAMETROS
-7200
+9000
 20
 # Implementação de tempos configuraveis para cada direção
 # EM BREVE

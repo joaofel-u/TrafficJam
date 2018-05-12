@@ -5,8 +5,7 @@
 #include "array_list.hpp"
 #include "road.hpp"
 
-using structures::Road;
-using structures::Vehicle;
+using std::size_t;
 
 namespace structures {
 // Implementa uma pista de entrada (fonte ou central)
@@ -14,7 +13,7 @@ class EntryRoad : public Road {
  public:
      // Construtor
      EntryRoad(unsigned int velocity,
-            std::size_t max_size,
+            size_t max_size,
             int prob_rl,
             int prob_rf,
             int prob_rr,
@@ -34,24 +33,31 @@ class EntryRoad : public Road {
      // Retorna a referencia para a pista na direção dada
      Road* out_road(int direction);
 
+     // Retorna se a pista esta com o semaforo aberto para sua direcao
+     bool open();
+
+     // Altera o valor da variavel open_
+     void open(bool open);
+
      // Gera um tempo aleato'rio para entrada de um novo veiculo
-     std::size_t time_next_vehicle();
+     size_t time_next_vehicle();
 
      // Calcula aleatoriamente a direcao de um carro baseado na prob. de cada pista eferente
      int next_direction();  // 0 = left, 1 = front, 2 = right
 
  private:
-	 ArrayList<Road *> out_roads_{3u};  // Lista das pistas de saida
+	 ArrayList<Road*> out_roads_{3u};  // Lista das pistas de saida
 	 int probs_[3];  // Probabilidade de tomar uma determinada pista
      int average_new_time_;
      int variation_;
+     bool open_{false};  // Sinaliza se a pista esta com o semaforo aberto para sua direcao
 };
 
 }  // namespace structures
 
 // IMPLEMENTACAO
 structures::EntryRoad::EntryRoad(unsigned int velocity,
-                                std::size_t max_size,
+                                size_t max_size,
                                 int prob_rl,
                                 int prob_rf,
                                 int prob_rr,
@@ -82,11 +88,19 @@ void structures::EntryRoad::out_roads(Road* rl, Road* rf, Road* rr) {
     out_roads_.push_back(rr);  // Road_right
 }
 
-Road* structures::EntryRoad::out_road(int direction) {
+structures::Road* structures::EntryRoad::out_road(int direction) {
     return out_roads_[direction];
 }
 
-std::size_t structures::EntryRoad::time_next_vehicle() {
+bool structures::EntryRoad::open() {
+    return open_;
+}
+
+void structures::EntryRoad::open(bool open) {
+    open_ = open;
+}
+
+size_t structures::EntryRoad::time_next_vehicle() {
     srand(time(NULL));
     return (rand() % (2*variation_)) + (average_new_time_ - variation_);
 }

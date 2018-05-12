@@ -4,12 +4,14 @@
 
 #include <cstdint>
 
-namespace structures {
+using std::size_t;
 
+namespace structures {
+// Define um evento dentro do sistema
 class Event {
   public:
 	  // Construtor
-	  Event(char type, std::size_t time, void* src);
+	  Event(char type, size_t time, void* src);
 
 	  // Destrutor
 	  ~Event();
@@ -18,7 +20,7 @@ class Event {
 	  char type() const;
 
 	  // Retorna o horario global do evento
-	  std::size_t event_time() const;
+	  size_t event_time() const;
 
 	  // Retorna referencia para quem gerou o evento
 	  void* src() const;
@@ -31,7 +33,7 @@ class Event {
 
   private:
 	  char type_;  // i = in, o = out, s = semaphore_change, a = semaphore_arrive
-	  std::size_t event_time_;
+	  size_t event_time_;
 	  void* src_;
 };
 
@@ -39,7 +41,7 @@ class Event {
 
 // IMPLEMENTACAO
 
-structures::Event::Event(char type, std::size_t time_, void* src) {
+structures::Event::Event(char type, size_t time_, void* src) {
 	type_ = type;
 	event_time_ = time_;
 	src_ = src;

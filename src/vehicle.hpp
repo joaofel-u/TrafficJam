@@ -8,8 +8,10 @@
 
 #define SAFETY_DISTANCE 3  // distancia de seguranca entre dois carros
 
-namespace structures {
+using std::size_t;
 
+namespace structures {
+// Define um veiculo dentro do sistema
 class Vehicle {
  public:
      // Construtor
@@ -19,7 +21,7 @@ class Vehicle {
      ~Vehicle();
 
      // Retorna o tamanho do veiculo ja acrescido da distancia de seguranca
-     std::size_t size() const;
+     size_t size() const;
 
      // Retorna a direcao que o veiculo tomara ao trocar de pista
      int direction() const;
@@ -28,7 +30,7 @@ class Vehicle {
      void direction(int direction);
 
  private:
-	 std::size_t size_;  // Tamanho do veiculo em metros
+	 size_t size_;  // Tamanho do veiculo em metros
      char direction_;  // 0=left, 1=front, 2=right
 
 };
@@ -46,7 +48,7 @@ structures::Vehicle::~Vehicle() {
     // Empty destructor (nada alocado dinamicamente)
 }
 
-std::size_t structures::Vehicle::size() const {
+size_t structures::Vehicle::size() const {
     return (size_ + SAFETY_DISTANCE);
 }
 
