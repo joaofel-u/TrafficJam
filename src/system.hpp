@@ -164,27 +164,56 @@ void structures::System::run() {
                         delete new_vehicle;
                         std::cout << "Pista engarrafada: " << road->name();
                     }
+
+                    break;
                 }
 
                 // Evento de saida por um dos sumidouros
                 case 'o': {
                     events_made++;
+                    SinkRoad* road = (SinkRoad*) current_event.src();
+
+                    // Remove o evento realizado
+                    events_->pop(i);
+
+                    // Exclui o carro do sistema
+                    delete road->dequeue();
+
+                    break;
                 }
 
                 // Evento de troca de estado dos semaforos
                 case 's': {
                     events_made++;
+
+                    // Faz a troca nos semaforos
+                    for (int i = 0; i < semaphores_.size(); i++)
+                        semaphores_[i]->change();
+
+                    // Remove o evento realizado
+                    events_->pop(i);
+
+                    // Adiciona um evento de troca de semaforos à lista
+                    std::size_t event_time = global_time_ + semaphore_time_;
+                    Event* e = new Event('s', event_time, semaphores_[0]);
+                    events_->insert_sorted(*e);
+
+                    break;
                 }
 
                 // Evento de chegada num semaforo
                 case 'a': {
                     events_made++;
                     // calcular direcao do veiculo
+
+                    break;
                 }
 
                 default:  // Caso inalcancavel
                     break;
             }
+
+            current_event = events_->at(i);  // Atualiza o evento atual
         }
 
         global_time_++;
