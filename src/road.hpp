@@ -12,7 +12,7 @@ namespace structures {
 class Road : private LinkedQueue<Vehicle *> {
  public:
      // Construtor
-     Road(unsigned int velocity, std::size_t max_size, char type, char* name);
+     Road(unsigned int velocity, std::size_t max_size, char* name, char type);
 
      // Destrutor
      ~Road();
@@ -32,10 +32,10 @@ class Road : private LinkedQueue<Vehicle *> {
      /// Retorna o ultimo elemento da fila
      Vehicle* back() const;
 
-     // Retorna o tamanho maximo da fila
+     // Retorna o tamanho da pista
      std::size_t max_size() const;
 
-     // Retorna o tamanho atual da fila
+     // Retorna o tamanho atual da fila de carros
      std::size_t size() const;
 
      // Retorna se a pista esta bloqueada
@@ -44,32 +44,35 @@ class Road : private LinkedQueue<Vehicle *> {
      // Retorna se a pista esta cheia
      bool full() const;
 
-     // Retorna a velocidade ma'xima da pista
-     unsigned int velocity();
+     // Retorna o tempo em segundos que um carro leva para percorrer a pista
+     std::size_t time_of_route();
 
-     // Retorna o tipo de pista ('e' = eferente, 'a' = aferente)
+     // Retorna se a pista é eferente ou aferente
      char type();
+
+     // Retorna o nome da pista
+     char* name();
 
  private:
 	 unsigned int velocity_;  // Velocidade da via
-	 std::size_t max_size_;  // Tamanho em metros (VER)
-     std::size_t size_{0u};
+	 std::size_t max_size_;  // Tamanho em metros da pista
+     std::size_t size_{0u};  // Tamanho em metros da fila de carros
 	 bool blocked_;  // Sinaliza se a pista esta bloqueada
-     char type_;  // e = eferente (sink), a = aferente (alimenta um semaforo)
      char* name_;  // Nome simbo´lico da pista dentro do sistema
+     char type_;
 };
 
 }
 
 // IMPLEMENTACAO
 
-structures::Road::Road(unsigned int velocity, std::size_t max_size, char type, char* name) {
+structures::Road::Road(unsigned int velocity, std::size_t max_size, char* name, char type) {
     LinkedQueue<Vehicle*>();
     velocity_ = velocity;
     max_size_ = max_size;
-    type_ = type;
     blocked_ = false;
     name_ = name;
+    type_ = type;
 }
 
 structures::Road::~Road() {
@@ -103,12 +106,16 @@ bool structures::Road::full() const {
     return size_ == max_size_;
 }
 
-unsigned int structures::Road::velocity() {
-    return velocity_;
+std::size_t structures::Road::time_of_route() {
+    return (max_size_ / (velocity_ / 3,6));
 }
 
 char structures::Road::type() {
     return type_;
+}
+
+char* structures::Road::name() {
+    return name_;
 }
 
 #endif

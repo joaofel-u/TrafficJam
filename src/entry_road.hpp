@@ -5,6 +5,8 @@
 #include "array_list.hpp"
 #include "road.hpp"
 
+using structures::Road;
+
 namespace structures {
 // Implementa uma pista de entrada (fonte ou central)
 class EntryRoad : public Road {
@@ -28,8 +30,11 @@ class EntryRoad : public Road {
      // Define as ruas adjacentes no cruzamento
      void out_roads(Road* rl, Road* rf, Road* rr);
 
+     // Retorna a referencia para a pista na direção dada
+     Road* out_road(int direction);
+
      // Gera um tempo aleato'rio para entrada de um novo veiculo
-     unsigned int time_next_vehicle();
+     std::size_t time_next_vehicle();
 
      // Calcula aleatoriamente a direcao de um carro baseado na prob. de cada pista eferente
      int next_direction();  // 0 = left, 1 = front, 2 = right
@@ -52,7 +57,7 @@ structures::EntryRoad::EntryRoad(unsigned int velocity,
                                 int avg_new_time,
                                 int variation,
                                 char* name) :
-    Road::Road(velocity, max_size, 'a', name),
+    Road::Road(velocity, max_size, name, 'a'),
     average_new_time_{avg_new_time},
     variation_{variation}
     {
@@ -76,7 +81,11 @@ void structures::EntryRoad::out_roads(Road* rl, Road* rf, Road* rr) {
     out_roads_.push_back(rr);  // Road_right
 }
 
-unsigned int structures::EntryRoad::time_next_vehicle() {
+Road* structures::EntryRoad::out_road(int direction) {
+    return out_roads_[direction];
+}
+
+std::size_t structures::EntryRoad::time_next_vehicle() {
     srand(time(NULL));
     return (rand() % (2*variation_)) + (average_new_time_ - variation_);
 }

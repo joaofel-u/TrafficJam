@@ -22,7 +22,7 @@ class SinkRoad : public Road {
 
 // IMPLEMENTACAO
 structures::SinkRoad::SinkRoad(unsigned int velocity, std::size_t max_size, char* name) :
-    Road::Road(velocity, max_size, 'e', name)
+    Road::Road(velocity, max_size, name, 'e')
     {
 }
 

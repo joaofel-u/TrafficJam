@@ -24,14 +24,11 @@ class Semaphore {
      // Retorna a probabilidade de tomar a pista no indice index
      int roadProb(std::size_t index);
 
-     // Fecha o semaforo
-     void close();
-
      // Retorna a pista que esta com semaforo aberto no momento
      Road* open();
 
      // Abre a proxima pista
-     void open_next();
+     void change();
 
  private:
 	 ArrayList<Road *> efferent_{4};  // Lista das pistas de saida
@@ -73,15 +70,12 @@ int structures::Semaphore::roadProb(std::size_t index) {
     return probs_[index];
 }
 
-void structures::Semaphore::close() {
-    open_ = nullptr;
-}
-
 Road* structures::Semaphore::open() {
     return open_;
 }
 
-void structures::Semaphore::open_next() {
+void structures::Semaphore::change() {
+    open_ = nullptr;
     actual_ = ++actual_ % 4;
     open_ = afferent_[actual_];
 }

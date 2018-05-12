@@ -2,6 +2,8 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
+#include <stdexcept>
+#include <iostream>
 #include "array_list.hpp"
 #include "entry_road.hpp"
 #include "sink_road.hpp"
@@ -127,7 +129,69 @@ void structures::System::init() {
 }
 
 void structures::System::run() {
+    while (global_time_ < execution_time_) {
+        int events_made = 0;  // Numero de eventos feitos nessa execucao
+        int i = 0;  // Auxilia no caso de não conseguir realizar um evento
+        Event current_event = events_->at(i);
 
+        while (current_event.event_time() <= global_time_) {
+            switch(current_event.type()) {
+                // Evento de entrada por uma das fontes
+                case 'i': {
+                    events_made++;
+                    Vehicle* new_vehicle = new Vehicle();
+                    EntryRoad* road = (EntryRoad*) current_event.src();
+
+                    try {
+                        // Adiciona o carro a pista (se possivel)
+                        road->enqueue(new_vehicle);
+
+                        // Remove o evento realizado da lista de eventos
+                        events_->pop(i);
+
+                        // Calcula a proxima entrada na pista
+                        std::size_t event_time = global_time_ + road->time_next_vehicle();
+                        Event* new_vehicle_event = new Event('i', event_time, road);
+                        events_->insert_sorted(*new_vehicle_event);
+
+                        // Calcula a chegada do veiculo criado ao seu semaforo
+                        event_time = global_time_ + road->time_of_route();
+                        Event* semaphore_arrival = new Event('a', event_time, road);
+                        events_->insert_sorted(*semaphore_arrival);
+
+                    } catch(std::out_of_range error) { // Pista cheia
+                        i++;
+                        delete new_vehicle;
+                        std::cout << "Pista engarrafada: " << road->name();
+                    }
+                }
+
+                // Evento de saida por um dos sumidouros
+                case 'o': {
+                    events_made++;
+                }
+
+                // Evento de troca de estado dos semaforos
+                case 's': {
+                    events_made++;
+                }
+
+                // Evento de chegada num semaforo
+                case 'a': {
+                    events_made++;
+                    // calcular direcao do veiculo
+                }
+
+                default:  // Caso inalcancavel
+                    break;
+            }
+        }
+
+        global_time_++;
+        // Pula o relogio global para o horario do proximo evento no caso de nao ter feito nenhum agora
+        if (events_made == 0)
+            global_time_ = current_event.event_time();
+    }
 }
 
 void structures::System::result() {
