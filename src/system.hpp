@@ -48,6 +48,8 @@ class System {
 	ArrayList<Road*> roads_{14u};  // Lista das pistas do sistema
 	ArrayList<Semaphore*> semaphores_{2u};  // Lista dos semaforos
 	LinkedList<Event>* events_;  // Lista de eventos
+
+    std::size_t next_semaphore_change_;
 };
 
 }  // namespace structures
@@ -112,11 +114,50 @@ void structures::System::init() {
     roads_.push_back(c1_west);
 
     // Criacao dos semaforos
-    Semaphore* s1 = new Semaphore(o1_east, n1_south, c1_west, s1_north, o1_west, 0,
-                                  n1_north, 0, c1_east, 0, s1_south, 0);
+    Semaphore* s1 = new Semaphore(o1_east, n1_south, c1_west, s1_north, o1_west,
+                                  n1_north, c1_east, s1_south);
 
-    Semaphore* s2 = new Semaphore(c1_east, n2_south, l1_west, s2_north, c1_west, 0,
-                                  n2_north, 0, l1_east, 0, s2_south, 0);
+    Semaphore* s2 = new Semaphore(c1_east, n2_south, l1_west, s2_north, c1_west,
+                                  n2_north, l1_east, s2_south);
+
+    // Montagem das listas de probabilidades de cada pista ser tomada para composicao dos semaforos
+    // S1
+    int prob_o1_west[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(o1_west);
+
+    int prob_n1_north[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(n1_north);
+
+    int prob_c1_east[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(c1_east);
+
+    int prob_s1_south[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(s1_south);
+
+    s1->road_probs(prob_o1_west, prob_n1_north, prob_c1_east, prob_s1_south);
+
+    // S2
+    int prob_c1_west[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(c1_west);
+
+    int prob_n2_north[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(n2_north);
+
+    int prob_l1_east[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(l1_east);
+
+    int prob_s2_south[4];
+    for (int i = 0; i < 4; i++)
+        prob_o1_west[i] = s1->afferent(i)->road_prob(s2_south);
+
+    s2->road_probs(prob_c1_west, prob_n2_north, prob_l1_east, prob_s2_south);
 
     // Insercao dos semaforos na lista de semaforos
     semaphores_.push_back(s1);
@@ -140,6 +181,12 @@ void structures::System::run() {
     while (global_time_ < execution_time_) {
         int events_made = 0;  // Numero de eventos feitos nessa execucao
         int i = 0;  // Auxilia no caso de não conseguir realizar um evento
+
+        if (global_time_ == next_semaphore_change_) {  // Dá preferencia para eventos de troca de semaforo sobre outros
+            while (events_->at(i).type() != 's')
+                i++;
+        }
+
         Event current_event = events_->at(i);
 
         while (current_event.event_time() <= global_time_) {
@@ -209,6 +256,7 @@ void structures::System::run() {
                     Event* e = new Event('s', event_time, semaphores_[0]);
                     events_->insert_sorted(*e);
                     semaphore_changes_++;
+                    next_semaphore_change_ = event_time;
 
                     break;
                 }
@@ -260,7 +308,10 @@ void structures::System::run() {
                 default:  // Caso inalcancavel
                     break;
             }
-
+            if (global_time_ == next_semaphore_change_) {  // Dá preferencia para eventos de troca de semaforo sobre outros
+                while (events_->at(i).type() != 's')
+                    i++;
+            }
             current_event = events_->at(i);  // Atualiza o evento atual
         }
 

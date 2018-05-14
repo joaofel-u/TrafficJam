@@ -33,6 +33,9 @@ class EntryRoad : public Road {
      // Retorna a referencia para a pista na direção dada
      Road* out_road(int direction);
 
+     // Retorna a probabilidade de tomar a pista dada
+     int road_prob(Road* road);
+
      // Retorna se a pista esta com o semaforo aberto para sua direcao
      bool open();
 
@@ -90,6 +93,17 @@ void structures::EntryRoad::out_roads(Road* rl, Road* rf, Road* rr) {
 
 structures::Road* structures::EntryRoad::out_road(int direction) {
     return out_roads_[direction];
+}
+
+int structures::EntryRoad::road_prob(Road* road) {
+    int i = 0;
+    while (i < out_roads_.size()) {
+        if (out_roads_[i] == road)
+            return probs_[i];
+        i++;
+    }
+
+    return 0;
 }
 
 bool structures::EntryRoad::open() {
